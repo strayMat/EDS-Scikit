@@ -25,6 +25,7 @@ class HiveData:  # pragma: no cover
         columns_to_load: Optional[
             Union[Dict[str, Optional[List[str]]], List[str]]
         ] = None,
+        data_model: str = "omop"
     ):
         """Spark interface for OMOP data stored in a Hive database.
 
@@ -50,7 +51,7 @@ class HiveData:  # pragma: no cover
             A list of the tables names can also be provided to load all columns of each table.
         columns_to_load : Optional[Union[Dict[str, Optional[List[str]]], List[str]]]
             *deprecated*
-
+        data_model : str
         Attributes
         ----------
         person : koalas dataframe
