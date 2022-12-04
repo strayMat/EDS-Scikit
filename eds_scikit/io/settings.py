@@ -249,30 +249,3 @@ for (
         i2b2_tables_to_load[i2b2_table_name_] = list(column_mapping.keys())
     else:
         i2b2_tables_to_load[i2b2_table_name_] = None
-
-
-
-def map_i2b2_to_scikiteds_omop(
-    hive_data, map_table: dict[str, str], map_cols: dict[str, dict[str, str]]
-):
-    """Run the mapping between i2b2 and scikit-eds OMOP.
-    TODO: Could be a static method of the hive_data class (because it modifies the class attributes inplace).
-
-    Parameters
-    ----------
-    hive_data : _type_
-        _description_
-    map_table : Dict[str, str]
-        Link between i2b2 table names and scikit-eds OMOP table names: {"i2b2_table_name": "omop_table_name"}
-    map_cols : Dict[str, str]
-        Link between i2b2 column names and scikit-eds OMOP column names: {"omop_table_name": {"i2b2_col_name": "omop_col_name"}}
-    """
-    # renaming tables
-    for i2b2_table_name, omop_table_name in map_table.items():
-        hive_data.rename_table(i2b2_table_name, omop_table_name)
-        # renaming columns
-        map_cols_i2b2_to_omop = map_cols[omop_table_name]
-        if map_cols_i2b2_to_omop is not None:
-            hive_data.__getattr__(i2b2_table_name).rename(
-                columns=map_cols_i2b2_to_omop, inplace=True
-            )

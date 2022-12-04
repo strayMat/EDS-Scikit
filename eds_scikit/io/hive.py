@@ -113,7 +113,7 @@ class HiveData:  # pragma: no cover
         )
         self.database_name = database_name
         self.person_ids = self._prepare_person_ids(person_ids)
-
+        
         tmp_tables_to_load = settings.tables_to_load
         if isinstance(tables_to_load, dict):
             for table_name, columns in tables_to_load.items():
@@ -274,3 +274,27 @@ class HiveData:  # pragma: no cover
 
     def __dir__(self) -> List[str]:
         return list(set(list(super().__dir__()) + self.available_tables))
+
+
+    def map_i2b2_to_scikiteds_omop(
+        self, map_table: dict[str, str], map_cols: dict[str, dict[str, str]]
+    ):
+        """
+        Run the mapping between i2b2 and scikit-eds OMOP.
+
+        Parameters
+        ----------
+        map_table : Dict[str, str]
+            Link between i2b2 table names and scikit-eds OMOP table names: {"i2b2_table_name": "omop_table_name"}
+        map_cols : Dict[str, str]
+            Link between i2b2 column names and scikit-eds OMOP column names: {"omop_table_name": {"i2b2_col_name": "omop_col_name"}}
+        """
+        # renaming tables
+        for i2b2_table_name, omop_table_name in map_table.items():
+            self.rename_table(i2b2_table_name, omop_table_name)
+            # renaming columns
+            map_cols_i2b2_to_omop = map_cols[omop_table_name]
+            if map_cols_i2b2_to_omop is not None:
+                getattr(self, omop_table_name).rename(
+                    columns=map_cols_i2b2_to_omop, inplace=True
+                )
