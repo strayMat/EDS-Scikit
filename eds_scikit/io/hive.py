@@ -51,7 +51,8 @@ class HiveData:  # pragma: no cover
             A list of the tables names can also be provided to load all columns of each table.
         columns_to_load : Optional[Union[Dict[str, Optional[List[str]]], List[str]]]
             *deprecated*
-        data_model : str
+        data_model : Optional[str]
+            Data model to use. Currently only "omop" and "i2b2" are supported. By default "omop".
         Attributes
         ----------
         person : koalas dataframe
@@ -130,6 +131,12 @@ class HiveData:  # pragma: no cover
         self.tables_to_load = tmp_tables_to_load
         self.available_tables = self.list_available_tables()
         self._tables = {}
+        if data_model == "i2b2":
+            self._map_i2b2_to_scikiteds_omop(
+                map_cols=settings.map_columns_i2b2_to_omop, 
+                map_tables=settings.map_tables_i2b2_to_omop
+                )
+            # TODO: I
 
     def list_available_tables(self) -> List[str]:
         tables_df = self.spark_session.sql(
@@ -276,8 +283,8 @@ class HiveData:  # pragma: no cover
         return list(set(list(super().__dir__()) + self.available_tables))
 
 
-    def map_i2b2_to_scikiteds_omop(
-        self, map_table: dict[str, str], map_cols: dict[str, dict[str, str]]
+    def _map_i2b2_to_scikiteds_omop(
+        self, map_table: Dict[str, str], map_cols: Dict[str, dict[str, str]]
     ):
         """
         Run the mapping between i2b2 and scikit-eds OMOP.
