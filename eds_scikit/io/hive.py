@@ -136,7 +136,7 @@ class HiveData:  # pragma: no cover
                 map_cols=settings.map_columns_i2b2_to_omop, 
                 map_tables=settings.map_tables_i2b2_to_omop
                 )
-            # TODO: I
+            # TODO: Define the behavior of the user. 
 
     def list_available_tables(self) -> List[str]:
         tables_df = self.spark_session.sql(
@@ -284,7 +284,7 @@ class HiveData:  # pragma: no cover
 
 
     def _map_i2b2_to_scikiteds_omop(
-        self, map_table: Dict[str, str], map_cols: Dict[str, dict[str, str]]
+        self, map_table: Dict[str, str], map_cols: Dict[str, Dict[str, str]]
     ):
         """
         Run the mapping between i2b2 and scikit-eds OMOP.
